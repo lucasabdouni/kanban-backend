@@ -2,9 +2,9 @@
   "type": "postgres",
   "host": "localhost",
   "port": 5432,
-  "username": "lucasabdouni",
-  "password": "root",
-  "database": "nest_api",
+  "username": "docker",
+  "password": "docker",
+  "database": "apinestjs",
   "entities": [
     "dist/**/*.entity{.ts,.js}"
   ],

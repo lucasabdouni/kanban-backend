@@ -9,7 +9,16 @@ import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: 'localhost',
+      port: 5432,
+      username: 'docker',
+      password: 'docker',
+      database: 'apinestjs',
+      entities: ['dist/**/*.entity{.ts,.js}'],
+      synchronize: true,
+    }),
     GraphQLModule.forRoot({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
