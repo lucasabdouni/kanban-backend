@@ -7,17 +7,20 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import dbConfiguration from './config/db.config';
+
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'docker',
-      password: 'docker',
-      database: 'apinestjs',
-      entities: ['dist/**/*.entity{.ts,.js}'],
-      synchronize: true,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [dbConfiguration],
+    }),
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        ...configService.get('database'),
+      }),
     }),
     GraphQLModule.forRoot({
       driver: ApolloDriver,
