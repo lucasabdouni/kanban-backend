@@ -10,6 +10,12 @@ import { UserModule } from './user/user.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import dbConfiguration from './config/db.config';
+import { CardsModule } from './kanban/cards/cards.module';
+import { CardsResolver } from './kanban/cards/cards.resolver';
+import { CardsService } from './kanban/cards/cards.service';
+import { ColumnsModule } from './kanban/columns/columns.module';
+import { ColumnsResolver } from './kanban/columns/columns.resolver';
+import { ColumnsService } from './kanban/columns/columns.service';
 
 @Module({
   imports: [
@@ -30,8 +36,16 @@ import dbConfiguration from './config/db.config';
     }),
     UserModule,
     AuthModule,
+    CardsModule,
+    ColumnsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    CardsService,
+    CardsResolver,
+    ColumnsService,
+    ColumnsResolver,
+  ],
 })
 export class AppModule {}
