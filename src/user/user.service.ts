@@ -47,7 +47,7 @@ export class UserService {
 
     await this.userRepository.update(user, { ...data });
 
-    const userUpdated = this.userRepository.create({ ...user, ...data });
+    const userUpdated = { ...user, ...data };
 
     return userUpdated;
   }
