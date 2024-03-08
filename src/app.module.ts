@@ -26,6 +26,7 @@ import dbConfiguration from './config/db.config';
     GraphQLModule.forRoot({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      context: ({ req }) => ({ req }),
     }),
     UserModule,
     AuthModule,
