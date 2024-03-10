@@ -2,10 +2,25 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type ColumnTable {
+  id: ID!
+  title: String!
+  cards: [Card!]!
+}
+
+type Card {
+  id: ID!
+  title: String!
+  description: String!
+  columnsTable: ColumnTable!
+  user: User!
+}
+
 type User {
   id: ID!
   name: String!
   email: String!
+  cards: [Card!]!
 }
 
 type AuthType {
@@ -17,6 +32,12 @@ type Query {
   users: [User!]!
   user(id: String!): User!
   userByEmail(email: String!): User!
+  cards: [Card!]!
+  card(id: String!): Card!
+  cardByUserId(userId: String!): [Card!]!
+  cardByColumnId(columnId: String!): [Card!]!
+  columns: [ColumnTable!]!
+  column(id: String!): ColumnTable!
 }
 
 type Mutation {
@@ -24,6 +45,12 @@ type Mutation {
   updateUser(id: String!, data: UpdateUserInput!): User!
   deleteUser(id: String!): Boolean!
   login(data: AuthInput!): AuthType!
+  createCard(data: CreateCardInput!): Card!
+  updateCard(id: String!, data: UpdateCardInput!): Card!
+  updateUserToCard(id: String!, data: UpdateUserToCardInput!): Card!
+  createColumn(data: CreateColumnInput!): ColumnTable!
+  updateColumn(id: String!, data: UpdateColumnInput!): ColumnTable!
+  deleteColumn(id: String!): Boolean!
 }
 
 input CreateUserInput {
@@ -41,4 +68,28 @@ input UpdateUserInput {
 input AuthInput {
   email: String!
   password: String!
+}
+
+input CreateCardInput {
+  title: String!
+  description: String!
+  column: String!
+  user: String!
+}
+
+input UpdateCardInput {
+  title: String
+  description: String
+}
+
+input UpdateUserToCardInput {
+  user: String
+}
+
+input CreateColumnInput {
+  title: String!
+}
+
+input UpdateColumnInput {
+  title: String!
 }

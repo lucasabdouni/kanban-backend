@@ -1,21 +1,18 @@
 import { ApolloDriver } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UserModule } from './user/user.module';
-
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AuthModule } from './auth/auth.module';
 import dbConfiguration from './config/db.config';
+
+// MODULES
+import { AuthModule } from './auth/auth.module';
 import { CardsModule } from './kanban/cards/cards.module';
-import { CardsResolver } from './kanban/cards/cards.resolver';
-import { CardsService } from './kanban/cards/cards.service';
 import { ColumnsModule } from './kanban/columns/columns.module';
-import { ColumnsResolver } from './kanban/columns/columns.resolver';
-import { ColumnsService } from './kanban/columns/columns.service';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -40,12 +37,6 @@ import { ColumnsService } from './kanban/columns/columns.service';
     ColumnsModule,
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-    CardsService,
-    CardsResolver,
-    ColumnsService,
-    ColumnsResolver,
-  ],
+  providers: [AppService],
 })
 export class AppModule {}
