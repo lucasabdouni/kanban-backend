@@ -25,7 +25,7 @@ export class UserService {
     const user = await this.userRepository.findOne({ where: { id } });
 
     if (!user) {
-      throw new NotFoundException('Usuário não encontrado');
+      throw new NotFoundException('User not found');
     }
 
     return user;
@@ -35,18 +35,27 @@ export class UserService {
     const user = await this.userRepository.findOne({ where: { email } });
 
     if (!user) {
-      throw new NotFoundException('Usuário não encontrado');
+      throw new NotFoundException('User not found');
     }
 
     return user;
   }
 
   async createUser(data: CreateUserInput): Promise<User> {
+    const email = data.email;
+    const checkEmailExists = await this.userRepository.findOne({
+      where: { email },
+    });
+
+    if (checkEmailExists) {
+      throw new NotFoundException('E-mail already registered.');
+    }
+
     const user = this.userRepository.create(data);
     const userSaved = await this.userRepository.save(user);
 
     if (!userSaved) {
-      throw new InternalServerErrorException('Problema para criar um usuário.');
+      throw new InternalServerErrorException('Error when creating a new user.');
     }
 
     return userSaved;
