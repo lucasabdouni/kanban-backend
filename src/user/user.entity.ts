@@ -1,11 +1,20 @@
 import { Field, HideField, ID, ObjectType } from '@nestjs/graphql';
-import { Column, Entity, Generated, PrimaryGeneratedColumn } from 'typeorm';
+import { Card } from 'src/kanban/cards/cards.entity';
+import {
+  Column,
+  Entity,
+  Generated,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  Unique,
+} from 'typeorm';
 import { hashPasswordTransform } from '../common/helpers/crypto';
 
 @ObjectType()
 @Entity()
+@Unique(['email'])
 export class User {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   @Generated('uuid')
   @Field(() => ID)
   id: string;
@@ -21,4 +30,7 @@ export class User {
   })
   @HideField()
   password: string;
+
+  @OneToMany(() => Card, (card: Card) => card.user)
+  cards: Card[];
 }
