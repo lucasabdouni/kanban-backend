@@ -1,13 +1,15 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { User } from 'src/user/user.entity';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   Generated,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
+import { User } from '../../user/user.entity';
 import { ColumnTable } from '../columns/columns.entity';
 
 @ObjectType()
@@ -39,4 +41,10 @@ export class Card {
   })
   @JoinColumn({ name: 'UserId' })
   user: User;
+
+  @CreateDateColumn({ name: 'created_at', default: () => 'CURRENT_TIMESTAMP' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ name: 'updated_at', default: () => 'CURRENT_TIMESTAMP' })
+  updatedAt: Date;
 }

@@ -4,11 +4,12 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
+import { UserService } from '../../user/user.service';
 import { ColumnsService } from '../columns/columns.service';
 import { Card } from './cards.entity';
 import { CreateCardInput } from './dto/create-card.input';
+import { UpdateColumnToCardInput } from './dto/update-card-column.input';
 import { UpdateUserToCardInput } from './dto/update-card-user.input';
 import { UpdateCardInput } from './dto/update-card.input';
 
@@ -33,8 +34,6 @@ export class CardsService {
       throw new NotFoundException('Card not found');
     }
 
-    console.log(card);
-
     return card;
   }
 
@@ -54,8 +53,6 @@ export class CardsService {
     const cards = await this.cardRepository.find({
       where: { columnsTable: { id: columnId } },
     });
-
-    console.log(cards);
 
     if (!cards) {
       throw new NotFoundException('Card not found');
@@ -109,14 +106,35 @@ export class CardsService {
     const user = await this.userService.findUserById(data.user);
     const card = await this.findCardById(id);
 
-    if (!user) {
-      throw new NotFoundException('user not found.');
-    }
-
     await this.cardRepository.update(card, { user });
 
     const cardUpdated = { ...card, ...user };
 
     return cardUpdated;
+  }
+
+  async updateColumnToCard(
+    id: string,
+    data: UpdateColumnToCardInput,
+  ): Promise<Card> {
+    const column = await this.colomnService.findColumnById(data.column);
+    const card = await this.findCardById(id);
+
+    await this.cardRepository.update(card, { columnsTable: column });
+
+    const cardUpdated = { ...card, ...column };
+
+    return cardUpdated;
+  }
+
+  async deleteCard(id: string): Promise<boolean> {
+    const card = await this.findCardById(id);
+
+    const deleted = await this.cardRepository.delete(card);
+
+    if (deleted) {
+      return true;
+    }
+    return false;
   }
 }
