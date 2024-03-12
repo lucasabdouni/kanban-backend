@@ -58,6 +58,26 @@ describe('UserService', () => {
     });
   });
 
+  describe('When search User By Email', () => {
+    it('should find a existing user', async () => {
+      const user = TesteUtil.giveAMeAValidUser();
+      mockRepository.findOne.mockReturnValue(user);
+      const userFound = await service.findUserByEmail('johndoe@email.com');
+
+      expect(userFound).toMatchObject({ name: user.name });
+      expect(mockRepository.findOne).toHaveBeenCalledTimes(1);
+    });
+
+    it('should return a expection when does not find a user', async () => {
+      mockRepository.findOne.mockReturnValue(null);
+
+      expect(service.findUserByEmail('john@email.com')).rejects.toBeInstanceOf(
+        NotFoundException,
+      );
+      expect(mockRepository.findOne).toHaveBeenCalledTimes(1);
+    });
+  });
+
   describe('When search User By Id', () => {
     it('should find a existing user', async () => {
       const user = TesteUtil.giveAMeAValidUser();
@@ -98,10 +118,22 @@ describe('UserService', () => {
       await service.createUser(user).catch((e) => {
         expect(e).toBeInstanceOf(InternalServerErrorException);
         expect(e).toMatchObject({
-          message: 'Problema para criar um usuário.',
+          message: 'Error when creating a new user.',
         });
         expect(mockRepository.save).toHaveBeenCalledTimes(1);
         expect(mockRepository.create).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    it('should return an expectation when the email already exists', async () => {
+      const user = TesteUtil.giveAMeAValidUser();
+      mockRepository.findOne.mockReturnValue(user);
+
+      await service.createUser(user).catch((e) => {
+        expect(e).toBeInstanceOf(NotFoundException);
+        expect(e).toMatchObject({
+          message: 'E-mail already registered.',
+        });
       });
     });
   });
@@ -123,7 +155,7 @@ describe('UserService', () => {
     });
   });
 
-  describe('deleteUser', () => {
+  describe('When delete User', () => {
     it('Should delete a existing user', async () => {
       const user = TesteUtil.giveAMeAValidUser();
       mockRepository.findOne.mockReturnValue(user);
