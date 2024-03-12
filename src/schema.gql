@@ -39,6 +39,10 @@ type AuthType {
   token: String!
 }
 
+type RefreshTokenType {
+  token: String!
+}
+
 type Query {
   users: [User!]!
   user(id: String!): User!
@@ -56,6 +60,7 @@ type Mutation {
   updateUser(id: String!, data: UpdateUserInput!): User!
   deleteUser(id: String!): Boolean!
   login(data: AuthInput!): AuthType!
+  revalidateToken: RefreshTokenType!
   createCard(data: CreateCardInput!): Card!
   updateCard(id: String!, data: UpdateCardInput!): Card!
   updateUserToCard(id: String!, data: UpdateUserToCardInput!): Card!

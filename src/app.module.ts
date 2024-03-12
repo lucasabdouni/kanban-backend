@@ -29,7 +29,17 @@ import { UserModule } from './user/user.module';
     GraphQLModule.forRoot({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
-      context: ({ req }) => ({ req }),
+      cors: {
+        origin: true,
+        methods: 'GET, HEAD, PUT, PATCH, POST, DELETE, OPTIONS',
+        credentials: true,
+      },
+      context: ({ req, res }) => ({ req, res }),
+      playground: {
+        settings: {
+          'request.credentials': 'include',
+        },
+      },
     }),
     UserModule,
     AuthModule,
