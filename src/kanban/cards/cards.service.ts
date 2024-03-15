@@ -92,8 +92,8 @@ export class CardsService {
   async updateCard(id: string, data: UpdateCardInput): Promise<Card> {
     const card = await this.findCardById(id);
 
-    Object.assign(card, data);
-    const cardUpdated = await this.cardRepository.save(card);
+    const updatedCard = { ...card, ...data };
+    const cardUpdated = await this.cardRepository.save(updatedCard);
 
     return cardUpdated;
   }
@@ -107,8 +107,6 @@ export class CardsService {
 
     card.user = user;
     const cardUpdated = await this.cardRepository.save(card);
-
-    console.log(cardUpdated);
 
     // await this.cardRepository.update(card, { user });
     // const cardUpdated = { ...card, ...user };
