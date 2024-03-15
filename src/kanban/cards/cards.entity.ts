@@ -26,18 +26,16 @@ export class Card {
   @Column()
   description: string;
 
-  @ManyToOne(
-    () => ColumnTable,
-    (columnTable: ColumnTable) => columnTable.cards,
-    {
-      eager: true,
-    },
-  )
+  @ManyToOne(() => ColumnTable, (columnTable: ColumnTable) => columnTable.id, {
+    eager: true,
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'ColumnTableId' })
   columnsTable: ColumnTable;
 
-  @ManyToOne(() => User, (user: User) => user.cards, {
+  @ManyToOne(() => User, (user: User) => user.id, {
     eager: true,
+    onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'UserId' })
   user: User;
