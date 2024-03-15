@@ -72,7 +72,7 @@ export class CardsResolver {
 
   @UseGuards(GqlAuthGuard)
   @Mutation(() => Card)
-  async UpdateColumnToCardInput(
+  async UpdateColumnToCard(
     @Args('id') id: string,
     @Args('data') data: UpdateColumnToCardInput,
   ): Promise<Card> {
