@@ -64,9 +64,11 @@ export class UserService {
   async updateUser(id: string, data: UpdateUserInput): Promise<User> {
     const user = await this.findUserById(id);
 
-    await this.userRepository.update(user, { ...data });
+    Object.assign(user, data);
 
-    const userUpdated = { ...user, ...data };
+    const userUpdated = await this.userRepository.save(user);
+    // await this.userRepository.update(user, { ...data });
+    // const userUpdated = { ...user, ...data };
 
     return userUpdated;
   }
@@ -74,7 +76,7 @@ export class UserService {
   async deleteUser(id: string): Promise<boolean> {
     const user = await this.findUserById(id);
 
-    const deleted = await this.userRepository.delete(user);
+    const deleted = await this.userRepository.remove(user);
 
     if (deleted) {
       return true;

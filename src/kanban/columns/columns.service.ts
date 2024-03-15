@@ -50,7 +50,12 @@ export class ColumnsService {
   ): Promise<ColumnTable> {
     const column = await this.findColumnById(id);
 
-    await this.columnRepository.update(column, { ...data });
+    Object.assign(column, data);
+
+    // const columnUpdated = await this.columnRepository.save(column);
+    // const columnUpdatedTeste = await this.columnRepository.update(column, {
+    //   ...data,
+    // });
 
     const columnUpdated = { ...column, ...data };
 
@@ -60,7 +65,7 @@ export class ColumnsService {
   async deleteColumn(id: string): Promise<boolean> {
     const column = await this.findColumnById(id);
 
-    const deleted = await this.columnRepository.delete(column);
+    const deleted = await this.columnRepository.remove(column);
 
     if (deleted) {
       return true;
