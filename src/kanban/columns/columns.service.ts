@@ -50,9 +50,9 @@ export class ColumnsService {
   ): Promise<ColumnTable> {
     const column = await this.findColumnById(id);
 
-    Object.assign(column, data);
+    const updatedColumn = { ...column, ...data };
 
-    const cardUpdated = await this.columnRepository.save(column);
+    const cardUpdated = await this.columnRepository.save(updatedColumn);
 
     return cardUpdated;
   }
