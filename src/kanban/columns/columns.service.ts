@@ -52,14 +52,9 @@ export class ColumnsService {
 
     Object.assign(column, data);
 
-    // const columnUpdated = await this.columnRepository.save(column);
-    // const columnUpdatedTeste = await this.columnRepository.update(column, {
-    //   ...data,
-    // });
+    const cardUpdated = await this.columnRepository.save(column);
 
-    const columnUpdated = { ...column, ...data };
-
-    return columnUpdated;
+    return cardUpdated;
   }
 
   async deleteColumn(id: string): Promise<boolean> {

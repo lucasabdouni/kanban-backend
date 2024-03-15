@@ -95,9 +95,6 @@ export class CardsService {
     Object.assign(card, data);
     const cardUpdated = await this.cardRepository.save(card);
 
-    // await this.cardRepository.update(card, { ...data });
-    // const cardUpdated = { ...card, ...data };
-
     return cardUpdated;
   }
 
