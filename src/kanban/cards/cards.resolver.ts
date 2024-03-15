@@ -4,6 +4,7 @@ import { GqlAuthGuard } from 'src/auth/auth.guard';
 import { Card } from './cards.entity';
 import { CardsService } from './cards.service';
 import { CreateCardInput } from './dto/create-card.input';
+import { UpdateColumnToCardInput } from './dto/update-card-column.input';
 import { UpdateUserToCardInput } from './dto/update-card-user.input';
 import { UpdateCardInput } from './dto/update-card.input';
 
@@ -65,6 +66,17 @@ export class CardsResolver {
     @Args('data') data: UpdateUserToCardInput,
   ): Promise<Card> {
     const card = await this.cardService.updateUserToCard(id, data);
+
+    return card;
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => Card)
+  async UpdateColumnToCardInput(
+    @Args('id') id: string,
+    @Args('data') data: UpdateColumnToCardInput,
+  ): Promise<Card> {
+    const card = await this.cardService.updateColumnToCard(id, data);
 
     return card;
   }

@@ -62,6 +62,7 @@ type Mutation {
   createCard(data: CreateCardInput!): Card!
   updateCard(id: String!, data: UpdateCardInput!): Card!
   updateUserToCard(id: String!, data: UpdateUserToCardInput!): Card!
+  UpdateColumnToCardInput(id: String!, data: UpdateColumnToCardInput!): Card!
   deleteCard(id: String!): Boolean!
   createColumn(data: CreateColumnInput!): ColumnTable!
   updateColumn(id: String!, data: UpdateColumnInput!): ColumnTable!
@@ -98,6 +99,10 @@ input UpdateCardInput {
 
 input UpdateUserToCardInput {
   user: String
+}
+
+input UpdateColumnToCardInput {
+  column: String
 }
 
 input CreateColumnInput {
