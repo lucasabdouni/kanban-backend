@@ -4,13 +4,11 @@ import {
   CreateDateColumn,
   Entity,
   Generated,
-  OneToMany,
   PrimaryGeneratedColumn,
   Unique,
   UpdateDateColumn,
 } from 'typeorm';
 import { hashPasswordTransform } from '../common/helpers/crypto';
-import { Card } from '../kanban/cards/cards.entity';
 
 @ObjectType()
 @Entity()
@@ -32,9 +30,6 @@ export class User {
   })
   @HideField()
   password: string;
-
-  @OneToMany(() => Card, (card: Card) => card.user)
-  cards: Card[];
 
   @CreateDateColumn({ name: 'created_at', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;

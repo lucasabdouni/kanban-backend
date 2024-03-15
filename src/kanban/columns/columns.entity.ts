@@ -4,11 +4,9 @@ import {
   CreateDateColumn,
   Entity,
   Generated,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Card } from '../cards/cards.entity';
 
 @ObjectType()
 @Entity()
@@ -20,9 +18,6 @@ export class ColumnTable {
 
   @Column()
   title: string;
-
-  @OneToMany(() => Card, (card: Card) => card.columnsTable)
-  public cards: Card[];
 
   @CreateDateColumn({ name: 'created_at', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
