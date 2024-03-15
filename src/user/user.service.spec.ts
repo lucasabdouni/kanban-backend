@@ -17,7 +17,7 @@ describe('UserService', () => {
     create: jest.fn(),
     save: jest.fn(),
     update: jest.fn(),
-    delete: jest.fn(),
+    remove: jest.fn(),
   };
 
   beforeAll(async () => {
@@ -40,7 +40,7 @@ describe('UserService', () => {
     mockRepository.create.mockReset();
     mockRepository.save.mockReset();
     mockRepository.update.mockReset();
-    mockRepository.delete.mockReset();
+    mockRepository.remove.mockReset();
   });
 
   it('should be defined', () => {
@@ -141,17 +141,25 @@ describe('UserService', () => {
   describe('When update User', () => {
     it('should update a user', async () => {
       const user = TesteUtil.giveAMeAValidUser();
-      const updatedUser = { name: 'John Doe2' };
-      mockRepository.findOne.mockReturnValue(user);
-
-      const resultUser = await service.updateUser('1', {
-        ...user,
+      const newUserUpdate = {
         name: 'John Doe2',
-      });
+        email: 'teste@teste.com',
+      };
 
-      expect(resultUser).toMatchObject(updatedUser);
+      const userUpdate = {
+        ...user,
+        ...newUserUpdate,
+      };
+
+      mockRepository.findOne.mockReturnValue(user);
+      mockRepository.save.mockReturnValue(userUpdate);
+
+      const resultUser = await service.updateUser('1', newUserUpdate);
+
+      expect(resultUser.name).toEqual(userUpdate.name);
+      expect(resultUser.email).toEqual(userUpdate.email);
       expect(mockRepository.findOne).toHaveBeenCalledTimes(1);
-      expect(mockRepository.update).toHaveBeenCalledTimes(1);
+      expect(mockRepository.save).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -159,25 +167,25 @@ describe('UserService', () => {
     it('Should delete a existing user', async () => {
       const user = TesteUtil.giveAMeAValidUser();
       mockRepository.findOne.mockReturnValue(user);
-      mockRepository.delete.mockReturnValue(user);
+      mockRepository.remove.mockReturnValue(user);
 
       const deletedUser = await service.deleteUser('1');
 
       expect(deletedUser).toBe(true);
       expect(mockRepository.findOne).toHaveBeenCalledTimes(1);
-      expect(mockRepository.delete).toHaveBeenCalledTimes(1);
+      expect(mockRepository.remove).toHaveBeenCalledTimes(1);
     });
 
     it('Should not delete a inexisting user', async () => {
       const user = TesteUtil.giveAMeAValidUser();
       mockRepository.findOne.mockReturnValue(user);
-      mockRepository.delete.mockReturnValue(null);
+      mockRepository.remove.mockReturnValue(null);
 
       const deletedUser = await service.deleteUser('9');
 
       expect(deletedUser).toBe(false);
       expect(mockRepository.findOne).toHaveBeenCalledTimes(1);
-      expect(mockRepository.delete).toHaveBeenCalledTimes(1);
+      expect(mockRepository.remove).toHaveBeenCalledTimes(1);
     });
   });
 });

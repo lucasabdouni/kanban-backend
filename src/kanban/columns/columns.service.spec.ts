@@ -17,7 +17,7 @@ describe('ColumnsService', () => {
     create: jest.fn(),
     save: jest.fn(),
     update: jest.fn(),
-    delete: jest.fn(),
+    remove: jest.fn(),
   };
 
   beforeAll(async () => {
@@ -40,7 +40,7 @@ describe('ColumnsService', () => {
     mockRepository.create.mockReset();
     mockRepository.save.mockReset();
     mockRepository.update.mockReset();
-    mockRepository.delete.mockReset();
+    mockRepository.remove.mockReset();
   });
 
   it('should be defined', () => {
@@ -110,17 +110,23 @@ describe('ColumnsService', () => {
   describe('When update Column', () => {
     it('should update a Column', async () => {
       const column = TesteUtil.giveAMeAValidColumn();
-      const updatedColumn = { title: 'Alter column title' };
-      mockRepository.findOne.mockReturnValue(column);
+      const newColumnUpdate = {
+        title: 'new column',
+      };
 
-      const resultColumn = await service.updateColumn('1', {
+      const columnUpdate = {
         ...column,
-        title: 'Alter column title',
-      });
+        ...newColumnUpdate,
+      };
 
-      expect(resultColumn).toMatchObject(updatedColumn);
+      mockRepository.findOne.mockReturnValue(column);
+      mockRepository.save.mockReturnValue(columnUpdate);
+
+      const resultColumn = await service.updateColumn('1', newColumnUpdate);
+
+      expect(resultColumn.title).toEqual(columnUpdate.title);
       expect(mockRepository.findOne).toHaveBeenCalledTimes(1);
-      expect(mockRepository.update).toHaveBeenCalledTimes(1);
+      expect(mockRepository.save).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -128,25 +134,25 @@ describe('ColumnsService', () => {
     it('Should delete a existing column', async () => {
       const column = TesteUtil.giveAMeAValidColumn();
       mockRepository.findOne.mockReturnValue(column);
-      mockRepository.delete.mockReturnValue(column);
+      mockRepository.remove.mockReturnValue(column);
 
       const deletedColumn = await service.deleteColumn('1');
 
       expect(deletedColumn).toBe(true);
       expect(mockRepository.findOne).toHaveBeenCalledTimes(1);
-      expect(mockRepository.delete).toHaveBeenCalledTimes(1);
+      expect(mockRepository.remove).toHaveBeenCalledTimes(1);
     });
 
     it('Should not delete a inexisting column', async () => {
       const column = TesteUtil.giveAMeAValidColumn();
       mockRepository.findOne.mockReturnValue(column);
-      mockRepository.delete.mockReturnValue(null);
+      mockRepository.remove.mockReturnValue(null);
 
       const deletedColumn = await service.deleteColumn('8');
 
       expect(deletedColumn).toBe(false);
       expect(mockRepository.findOne).toHaveBeenCalledTimes(1);
-      expect(mockRepository.delete).toHaveBeenCalledTimes(1);
+      expect(mockRepository.remove).toHaveBeenCalledTimes(1);
     });
   });
 });

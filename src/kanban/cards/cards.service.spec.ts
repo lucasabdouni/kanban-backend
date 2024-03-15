@@ -21,7 +21,7 @@ describe('CardsService', () => {
     create: jest.fn(),
     save: jest.fn(),
     update: jest.fn(),
-    delete: jest.fn(),
+    remove: jest.fn(),
   };
 
   const mockRepositoryUser = {
@@ -62,7 +62,7 @@ describe('CardsService', () => {
     mockRepository.create.mockReset();
     mockRepository.save.mockReset();
     mockRepository.update.mockReset();
-    mockRepository.delete.mockReset();
+    mockRepository.remove.mockReset();
     mockRepositoryColumn.findOne.mockReset();
     mockRepositoryUser.findOne.mockReset();
   });
@@ -242,17 +242,25 @@ describe('CardsService', () => {
   describe('When update Card', () => {
     it('should update a card', async () => {
       const card = TesteUtil.giveAMeAValidCard();
-      const updatedCard = { title: 'Card Alter' };
-      mockRepository.findOne.mockReturnValue(card);
-
-      const resultCard = await service.updateCard('1', {
-        ...card,
+      const newCardUpdate = {
         title: 'Card Alter',
-      });
+        description: 'New description',
+      };
 
-      expect(resultCard).toMatchObject(updatedCard);
+      const cardUpdate = {
+        ...card,
+        ...newCardUpdate,
+      };
+
+      mockRepository.findOne.mockReturnValue(card);
+      mockRepository.save.mockReturnValue(cardUpdate);
+
+      const resultCard = await service.updateCard('1', newCardUpdate);
+
+      expect(resultCard.title).toEqual(newCardUpdate.title);
+      expect(resultCard.description).toEqual(newCardUpdate.description);
       expect(mockRepository.findOne).toHaveBeenCalledTimes(1);
-      expect(mockRepository.update).toHaveBeenCalledTimes(1);
+      expect(mockRepository.save).toHaveBeenCalledTimes(1);
     });
 
     it('should update the user of a card', async () => {
@@ -261,17 +269,22 @@ describe('CardsService', () => {
 
       const userId = user.id;
 
+      const updatedCard = {
+        ...card,
+        ...user,
+      };
+
       mockRepositoryUser.findOne.mockReturnValue(user);
       mockRepository.findOne.mockReturnValue(card);
+      mockRepository.save.mockReturnValue(updatedCard);
 
       const resultCard = await service.updateUserToCard('1', {
-        ...card,
         user: userId,
       });
 
       expect(resultCard.user.id).toEqual(userId);
       expect(mockRepository.findOne).toHaveBeenCalledTimes(1);
-      expect(mockRepository.update).toHaveBeenCalledTimes(1);
+      expect(mockRepository.save).toHaveBeenCalledTimes(1);
       expect(mockRepositoryUser.findOne).toHaveBeenCalledTimes(1);
     });
 
@@ -281,17 +294,22 @@ describe('CardsService', () => {
 
       const columnId = column.id;
 
+      const updatedCard = {
+        ...card,
+        ...column,
+      };
+
       mockRepositoryColumn.findOne.mockReturnValue(column);
       mockRepository.findOne.mockReturnValue(card);
+      mockRepository.save.mockReturnValue(updatedCard);
 
       const resultCard = await service.updateColumnToCard('1', {
-        ...card,
         column: columnId,
       });
 
-      expect(resultCard.user.id).toEqual(columnId);
+      expect(resultCard.columnsTable.id).toEqual(columnId);
       expect(mockRepository.findOne).toHaveBeenCalledTimes(1);
-      expect(mockRepository.update).toHaveBeenCalledTimes(1);
+      expect(mockRepository.save).toHaveBeenCalledTimes(1);
       expect(mockRepositoryColumn.findOne).toHaveBeenCalledTimes(1);
     });
   });
@@ -300,25 +318,25 @@ describe('CardsService', () => {
     it('Should delete a existing card', async () => {
       const card = TesteUtil.giveAMeAValidCard();
       mockRepository.findOne.mockReturnValue(card);
-      mockRepository.delete.mockReturnValue(card);
+      mockRepository.remove.mockReturnValue(card);
 
       const deletedCard = await service.deleteCard('1');
 
       expect(deletedCard).toBe(true);
       expect(mockRepository.findOne).toHaveBeenCalledTimes(1);
-      expect(mockRepository.delete).toHaveBeenCalledTimes(1);
+      expect(mockRepository.remove).toHaveBeenCalledTimes(1);
     });
 
     it('Should not delete a inexisting card', async () => {
       const card = TesteUtil.giveAMeAValidCard();
       mockRepository.findOne.mockReturnValue(card);
-      mockRepository.delete.mockReturnValue(null);
+      mockRepository.remove.mockReturnValue(null);
 
       const deletedCard = await service.deleteCard('9');
 
       expect(deletedCard).toBe(false);
       expect(mockRepository.findOne).toHaveBeenCalledTimes(1);
-      expect(mockRepository.delete).toHaveBeenCalledTimes(1);
+      expect(mockRepository.remove).toHaveBeenCalledTimes(1);
     });
   });
 });
