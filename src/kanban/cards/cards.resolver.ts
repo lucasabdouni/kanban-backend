@@ -68,4 +68,12 @@ export class CardsResolver {
 
     return card;
   }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => Boolean)
+  async deleteCard(@Args('id') id: string): Promise<boolean> {
+    const deleted = await this.cardService.deleteCard(id);
+
+    return deleted;
+  }
 }
