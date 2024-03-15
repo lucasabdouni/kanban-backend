@@ -92,9 +92,11 @@ export class CardsService {
   async updateCard(id: string, data: UpdateCardInput): Promise<Card> {
     const card = await this.findCardById(id);
 
-    await this.cardRepository.update(card, { ...data });
+    Object.assign(card, data);
+    const cardUpdated = await this.cardRepository.save(card);
 
-    const cardUpdated = { ...card, ...data };
+    // await this.cardRepository.update(card, { ...data });
+    // const cardUpdated = { ...card, ...data };
 
     return cardUpdated;
   }
@@ -106,9 +108,13 @@ export class CardsService {
     const user = await this.userService.findUserById(data.user);
     const card = await this.findCardById(id);
 
-    await this.cardRepository.update(card, { user });
+    card.user = user;
+    const cardUpdated = await this.cardRepository.save(card);
 
-    const cardUpdated = { ...card, ...user };
+    console.log(cardUpdated);
+
+    // await this.cardRepository.update(card, { user });
+    // const cardUpdated = { ...card, ...user };
 
     return cardUpdated;
   }
@@ -120,9 +126,10 @@ export class CardsService {
     const column = await this.colomnService.findColumnById(data.column);
     const card = await this.findCardById(id);
 
-    await this.cardRepository.update(card, { columnsTable: column });
-
-    const cardUpdated = { ...card, ...column };
+    card.columnsTable = column;
+    const cardUpdated = await this.cardRepository.save(card);
+    // await this.cardRepository.update(card, { columnsTable: column });
+    // const cardUpdated = { ...card, ...column };
 
     return cardUpdated;
   }
@@ -130,7 +137,7 @@ export class CardsService {
   async deleteCard(id: string): Promise<boolean> {
     const card = await this.findCardById(id);
 
-    const deleted = await this.cardRepository.delete(card);
+    const deleted = await this.cardRepository.remove(card);
 
     if (deleted) {
       return true;
